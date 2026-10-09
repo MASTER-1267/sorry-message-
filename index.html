@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#1f1c2c">
+  <title>A Small Message For You 💌</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { min-height: 100svh; min-height: 100vh; padding: 18px; display: flex; align-items: center; justify-content: center; color: #fff; text-align: center; background: radial-gradient(circle at center, #1f1c2c, #928dab); }
+    .card { width: 100%; max-width: 480px; padding: 32px 22px; border: 1px solid rgba(255,255,255,.18); border-radius: 22px; background: rgba(255,255,255,.09); box-shadow: 0 20px 40px rgba(0,0,0,.35); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); animation: appear .7s ease-out; }
+    .slide-text { font-size: clamp(1.5rem, 6vw, 2rem); font-weight: 750; line-height: 1.25; margin-bottom: 16px; text-shadow: 0 2px 10px rgba(0,0,0,.3); overflow-wrap: anywhere; }
+    .sub-text { color: #eee; font-size: 1rem; line-height: 1.5; margin-bottom: 22px; }
+    .btn { min-height: 48px; padding: 12px 28px; border: 0; border-radius: 999px; color: white; font-size: 1rem; font-weight: 700; background: linear-gradient(135deg,#ff416c,#ff4b2b); box-shadow: 0 4px 15px rgba(255,75,43,.4); cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .btn:active { transform: scale(.98); }
+    .meme-container { display: none; width: 100%; margin: 12px 0 20px; overflow: hidden; border-radius: 14px; background: #000; }
+    video { display: block; width: 100%; height: auto; max-height: 55svh; background: #000; object-fit: contain; }
+    .fade { animation: fade .4s ease-out; }
+    @keyframes fade { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: none; } }
+    @keyframes appear { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
+    @media (max-width: 380px) { body { padding: 12px; } .card { padding: 26px 16px; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="slide-text fade" id="mainText" aria-live="polite">I am so sorry 🥺</div>
+    <div class="sub-text" id="subText">Aage badhne ke liye tap karo...</div>
+    <div class="meme-container" id="memeBox">
+      <video id="memeVideo" controls playsinline webkit-playsinline preload="metadata">
+        <source src="./meme.mp4" type="video/mp4">
+        Your browser could not load this video. Please open this page in Chrome or Safari.
+      </video>
+    </div>
+    <button class="btn" id="actionBtn" type="button">Tap Karo</button>
+  </main>
+  <script>
+    let step = 0;
+    const mainText = document.getElementById('mainText');
+    const subText = document.getElementById('subText');
+    const memeBox = document.getElementById('memeBox');
+    const actionBtn = document.getElementById('actionBtn');
+    const memeVideo = document.getElementById('memeVideo');
+
+    function animateText() {
+      mainText.classList.remove('fade');
+      void mainText.offsetWidth;
+      mainText.classList.add('fade');
+    }
+
+    function nextSlide() {
+      step++;
+      animateText();
+
+      if (step >= 1 && step <= 10) {
+        memeVideo.pause();
+        memeBox.style.display = 'none';
+        mainText.textContent = `Sorry No. ${step} 🙏`;
+        subText.textContent = step === 10 ? 'Ab aakhri baat sun lo...' : 'Tap karke aage dekho...';
+        actionBtn.textContent = 'Next ➡️';
+      } else if (step === 11) {
+        mainText.textContent = 'Abhi to ruko... climax abhi baaki hai! 😂';
+        subText.textContent = 'Mood theek karne ke liye ye dekho:';
+        memeBox.style.display = 'block';
+        actionBtn.textContent = 'Aakhri Slide ❤️';
+        memeVideo.currentTime = 0;
+        // This play attempt follows the visitor's tap. If the phone blocks it,
+        // the visible video controls let them tap Play and enable sound.
+        const playAttempt = memeVideo.play();
+        if (playAttempt && typeof playAttempt.catch === 'function') {
+          playAttempt.catch(() => {
+            subText.textContent = 'Video par ▶ Play dabao aur sound on kar lo 🔊';
+          });
+        }
+      } else if (step === 12) {
+        memeVideo.pause();
+        memeBox.style.display = 'none';
+        mainText.textContent = 'Kuch to mila... dosti hi sahi ❤️';
+        subText.textContent = 'Gussa chhoro ab, baat kar lo! 😊';
+        actionBtn.textContent = 'Restart 🔄';
+      } else {
+        step = 0;
+        memeVideo.pause();
+        memeVideo.currentTime = 0;
+        memeBox.style.display = 'none';
+        mainText.textContent = 'I am so sorry 🥺';
+        subText.textContent = 'Aage badhne ke liye tap karo...';
+        actionBtn.textContent = 'Tap Karo';
+      }
+    }
+    actionBtn.addEventListener('click', nextSlide);
+  </script>
+</body>
+</html>
